@@ -5,7 +5,7 @@ import shutil
 import git
 repo = git.Repo(search_parent_directories=True)
 sha = repo.head.object.hexsha[0:7]
-if repo.is_dirty:
+if repo.is_dirty():
     sha += '~'
 print("Current version",sha)
 
