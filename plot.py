@@ -9,6 +9,7 @@ if repo.is_dirty:
     sha += '~'
 print("Current version",sha)
 
+exit(0)
 
 PROJECT_NAME = "ch340-breakout"
 LAYERS = [Edge_Cuts, F_Cu, B_Cu, F_SilkS,B_SilkS, F_Mask, B_Mask]
