@@ -3,26 +3,49 @@
 from pcbnew import *
 import shutil
 import git
-repo = git.Repo(search_parent_directories=True)
-sha = repo.head.object.hexsha[0:7]
-if repo.is_dirty():
-    sha += '~'
-print("Current version",sha)
+import argparse
 
-exit(0)
-
+## Config options
 PROJECT_NAME = "ch340-breakout"
-LAYERS = [Edge_Cuts, F_Cu, B_Cu, F_SilkS,B_SilkS, F_Mask, B_Mask]
+LAYERS = [Edge_Cuts, F_Cu, B_Cu, F_SilkS,B_SilkS, F_Mask, B_Mask,F_Paste]
+
+
+## Getting the version, either from the release tag given at the command line
+## or getting the git version
+VERSION = None
+RELEASE_MODE = False
+parser = argparse.ArgumentParser()
+parser.add_argument("-r", "--release", help="Create a release tag with the given value")
+args = parser.parse_args()
+RELEASE_MODE = args.release
+
+if RELEASE_MODE:
+    print ("Release mode, tag: ",args.release)
+    VERSION = args.release
+else:
+    repo = git.Repo(search_parent_directories=True)
+    VERSION = repo.head.object.hexsha[0:7]
+#    if repo.is_dirty():
+#        VERSION += '~'
+
+print("Current version: ", VERSION)
 
 # Load board and initialize plot controller
 board = LoadBoard(PROJECT_NAME + ".kicad_pcb")
+
+for drawing in board.GetDrawings():
+        if isinstance(drawing,TEXTE_PCB):
+            print ("Found text " , drawing.GetText())
+            if (drawing.GetText().lower().startswith("$$version")):
+                drawing.SetText("Version: " + VERSION);
+
+
 pc = PLOT_CONTROLLER(board)
 po = pc.GetPlotOptions()
 po.SetPlotFrameRef(False)
 po.SetOutputDirectory('gerber')
 
 
-pc.OpenPlotfile('ch340-breakout', PLOT_FORMAT_GERBER,'')
 for l in LAYERS:
     # Set current layer
     pc.SetLayer(l)
@@ -55,4 +78,4 @@ drlwriter.CreateDrillandMapFilesSet( 'gerber', genDrl, genMap );
 
 
 
-shutil.make_archive(PROJECT_NAME+'-fab', 'zip', 'gerber')
+shutil.make_archive(PROJECT_NAME+'-fab-'+VERSION, 'zip', 'gerber')
