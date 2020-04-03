@@ -15,7 +15,7 @@ LAYERS = [Edge_Cuts, F_Cu, B_Cu, F_SilkS,B_SilkS, F_Mask, B_Mask,F_Paste]
 VERSION = None
 RELEASE_MODE = False
 parser = argparse.ArgumentParser()
-parser.add_argument("-r", "--release", help="Create a release tag with the given value")
+parser.add_argument("-r", "--release", help="Use this version to set the version tag on the PCB")
 args = parser.parse_args()
 RELEASE_MODE = args.release
 
@@ -28,11 +28,12 @@ else:
 #    if repo.is_dirty():
 #        VERSION += '~'
 
-print("Current version: ", VERSION)
+print("Version: ", VERSION)
 
 # Load board and initialize plot controller
 board = LoadBoard(PROJECT_NAME + ".kicad_pcb")
 
+# setting the version tag on the PCB itself
 for drawing in board.GetDrawings():
         if isinstance(drawing,TEXTE_PCB):
             print ("Found text " , drawing.GetText())
@@ -40,6 +41,8 @@ for drawing in board.GetDrawings():
                 drawing.SetText("Version: " + VERSION);
 
 
+
+# plotting the gerber files into the output folder
 pc = PLOT_CONTROLLER(board)
 po = pc.GetPlotOptions()
 po.SetPlotFrameRef(False)
@@ -59,9 +62,8 @@ for l in LAYERS:
     pc.ClosePlot()
 
 
-
+# plotting the drill file
 drlwriter = EXCELLON_WRITER( board )
-#drlwriter.SetMapFileFormat( PLOT_FORMAT_PDF )
 
 mirror = False
 minimalHeader = False
@@ -76,6 +78,5 @@ genDrl = True
 genMap = False
 drlwriter.CreateDrillandMapFilesSet( 'gerber', genDrl, genMap );
 
-
-
+# Creating .zip pack for the fab
 shutil.make_archive(PROJECT_NAME+'-fab-'+VERSION, 'zip', 'gerber')

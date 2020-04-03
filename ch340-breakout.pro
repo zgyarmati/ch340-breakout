@@ -1,4 +1,4 @@
-update=Di 10 Dez 2019 11:21:12 CET
+update=Fr 03 Apr 2020 11:04:20 CEST
 version=1
 last_client=kicad
 [general]
@@ -34,7 +34,7 @@ LibDir=
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
-PlotDirectoryName=
+PlotDirectoryName=images/
 SubpartIdSeparator=0
 SubpartFirstId=65
 NetFmtName=Pcbnew

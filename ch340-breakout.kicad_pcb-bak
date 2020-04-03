@@ -1153,7 +1153,7 @@
     (tags SOT-23-6)
     (path /5DCDD0A4)
     (attr smd)
-    (fp_text reference U2 (at 3.0304 -0.061) (layer F.SilkS)
+    (fp_text reference U2 (at 0.0078 -2.3724) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value USBLC6-2SC6 (at 0 2.9) (layer F.Fab)
